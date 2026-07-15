@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Info Lookup</title>
+
+<link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<h1>🌐 Info Lookup</h1>
+
+
+<div class="tabs">
+
+<button onclick="mostrarIP()" class="tab active">
+🌐 IP
+</button>
+
+
+<button onclick="mostrarTelefono()" class="tab">
+📱 Teléfono
+</button>
+
+
+</div>
+
+
+
+<div class="search">
+
+
+<input
+id="entrada"
+placeholder="8.8.8.8">
+
+
+<button
+id="buscar"
+onclick="buscarIP()">
+
+Buscar
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+<div id="loading">
+
+
+<div class="loader"></div>
+
+<h2>
+Buscando información...
+</h2>
+
+
+</div>
+
+
+
+<div id="resultado"></div>
+
+
+
+<script src="/static/script.js"></script>
+<img src="/static/personaje.jpg" class="personaje">
+
+</body>
+
+</html>
