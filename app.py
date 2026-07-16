@@ -12,7 +12,7 @@ def guardar_visita():
     visita = {
         "fecha": datetime.now().strftime("%Y-%m-%d"),
         "hora": datetime.now().strftime("%H:%M"),
-        "ip": request.remote_addr,
+        "ip": request.headers.get("X-Forwarded-For", request.remote_addr),
         "navegador": request.headers.get("User-Agent")
     }
 
