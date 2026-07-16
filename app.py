@@ -7,9 +7,49 @@ from datetime import datetime
 app = Flask(__name__)
 ARCHIVO_VISITAS = "visitas.json"
 
-
 def guardar_visita():
 
+    visita = {
+        "fecha": datetime.now().strftime("%Y-%m-%d"),
+        "hora": datetime.now().strftime("%H:%M"),
+        "ip": request.remote_addr,
+        "navegador": request.headers.get("User-Agent")
+    }
+
+    visitas = []
+
+    if os.path.exists(ARCHIVO_VISITAS):
+        with open(ARCHIVO_VISITAS, "r", encoding="utf-8") as archivo:
+            try:
+                visitas = json.load(archivo)
+            except:
+                visitas = []
+
+    visitas.append(visita)
+
+    with open(ARCHIVO_VISITAS, "w", encoding="utf-8") as archivo:
+        json.dump(visitas, archivo, indent=4, ensure_ascii=False)
+    #aqui va el codigo que guarda las visitas
+#visitaa
+
+
+
+@app.route("/admin")
+def admin():
+
+    if os.path.exists(ARCHIVO_VISITAS):
+
+        with open(ARCHIVO_VISITAS, "r", encoding="utf-8") as archivo:
+
+            try:
+                visitas = json.load(archivo)
+            except:
+                visitas = []
+
+    else:
+        visitas = []
+
+    return render_template("admin.html", visitas=visitas)
     visita = {
         "fecha": datetime.now().strftime("%Y-%m-%d"),
         "hora": datetime.now().strftime("%H:%M"),

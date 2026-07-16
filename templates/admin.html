@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<title>Panel Admin</title>
+
+<style>
+
+body{
+    background:#0f172a;
+    color:white;
+    font-family:Arial;
+    padding:30px;
+}
+
+h1{
+    color:#38bdf8;
+}
+
+.card{
+
+    background:#1e293b;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:15px;
+
+}
+
+small{
+    color:#94a3b8;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>📊 Panel de Administración</h1>
+
+<h2>Visitas hoy: {{ visitas|length }}</h2>
+
+{% for visita in visitas %}
+
+<div class="card">
+
+<b>🕒 {{ visita.hora }}</b><br>
+
+🌐 {{ visita.ip }}<br>
+
+<small>{{ visita.navegador }}</small>
+
+</div>
+
+{% endfor %}
+
+</body>
+</html>
