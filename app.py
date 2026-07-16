@@ -1,12 +1,53 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, make_response
 import requests
 import json
 import os
 from datetime import datetime
-
+import uuid
 app = Flask(__name__)
 ARCHIVO_VISITAS = "visitas.json"
+ARCHIVO_VISITANTES = "visitantes.json"
+def cargar_visitantes():
 
+    if os.path.exists(ARCHIVO_VISITANTES):
+
+        with open(
+            ARCHIVO_VISITANTES,
+            "r",
+            encoding="utf-8"
+        ) as archivo:
+
+            try:
+                return json.load(archivo)
+
+            except:
+
+                return {}
+
+    return {}
+def guardar_visitantes(datos):
+
+    with open(
+        ARCHIVO_VISITANTES,
+        "w",
+        encoding="utf-8"
+    ) as archivo:
+
+        json.dump(
+            datos,
+            archivo,
+            indent=4,
+            ensure_ascii=False
+        )
+def obtener_visitor_id():
+
+    visitor_id = request.cookies.get("visitor_id")
+
+    if not visitor_id:
+
+        visitor_id = str(uuid.uuid4())
+
+    return visitor_id
 def guardar_visita():
 
     visita = {
@@ -81,10 +122,25 @@ def admin():
 @app.route("/")
 def inicio():
 
+    visitor_id = obtener_visitor_id()
+
     guardar_visita()
 
-    return render_template("index.html")
+    respuesta = make_response(
+        render_template("index.html")
+    )
 
+    respuesta.set_cookie(
+
+        "visitor_id",
+
+        visitor_id,
+
+        max_age=60*60*24*365
+
+    )
+
+    return respuesta
 
 
 @app.route("/ip", methods=["POST"])
