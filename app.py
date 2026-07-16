@@ -1,12 +1,48 @@
 from flask import Flask, render_template, request, jsonify
 import requests
-
+import json
+import os
+from datetime import datetime
 
 app = Flask(__name__)
+ARCHIVO_VISITAS = "visitas.json"
 
+
+def guardar_visita():
+
+    visita = {
+        "fecha": datetime.now().strftime("%Y-%m-%d"),
+        "hora": datetime.now().strftime("%H:%M"),
+        "ip": request.remote_addr,
+        "navegador": request.headers.get("User-Agent")
+    }
+
+    visitas = []
+
+    if os.path.exists(ARCHIVO_VISITAS):
+
+        with open(ARCHIVO_VISITAS, "r", encoding="utf-8") as archivo:
+
+            try:
+                visitas = json.load(archivo)
+            except:
+                visitas = []
+
+    hoy = datetime.now().strftime("%Y-%m-%d")
+
+    visitas = [v for v in visitas if v["fecha"] == hoy]
+
+    visitas.append(visita)
+
+    with open(ARCHIVO_VISITAS, "w", encoding="utf-8") as archivo:
+
+        json.dump(visitas, archivo, indent=4, ensure_ascii=False)
 
 @app.route("/")
 def inicio():
+
+    guardar_visita()
+
     return render_template("index.html")
 
 
