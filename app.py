@@ -48,28 +48,73 @@ def obtener_visitor_id():
         visitor_id = str(uuid.uuid4())
 
     return visitor_id
+def obtener_ip():
+
+    return request.headers.get(
+        "X-Forwarded-For",
+        request.remote_addr
+    )
+
+
+def obtener_navegador():
+
+    return request.headers.get(
+        "User-Agent"
+    )
 def guardar_visita():
 
-    visita = {
-        "fecha": datetime.now().strftime("%Y-%m-%d"),
-        "hora": datetime.now().strftime("%H:%M"),
-        "ip": request.headers.get("X-Forwarded-For", request.remote_addr),
-        "navegador": request.headers.get("User-Agent")
-    }
+    visitor_id = obtener_visitor_id()
 
-    visitas = []
+    visitantes = cargar_visitantes()
 
-    if os.path.exists(ARCHIVO_VISITAS):
-        with open(ARCHIVO_VISITAS, "r", encoding="utf-8") as archivo:
-            try:
-                visitas = json.load(archivo)
-            except:
-                visitas = []
+    ahora = datetime.now()
 
-    visitas.append(visita)
+    ip = obtener_ip()
 
-    with open(ARCHIVO_VISITAS, "w", encoding="utf-8") as archivo:
-        json.dump(visitas, archivo, indent=4, ensure_ascii=False)
+    navegador = obtener_navegador()
+
+
+    if visitor_id in visitantes:
+
+        visitante = visitantes[visitor_id]
+
+        visitante["visitas"] += 1
+
+        visitante["ultima_visita"] = ahora.strftime("%Y-%m-%d %H:%M")
+
+
+        if ip not in visitante["ips"]:
+            visitante["ips"].append(ip)
+
+
+        if navegador not in visitante["navegadores"]:
+            visitante["navegadores"].append(navegador)
+
+
+    else:
+
+        visitantes[visitor_id] = {
+
+            "visitas": 1,
+
+            "primera_visita": ahora.strftime("%Y-%m-%d %H:%M"),
+
+            "ultima_visita": ahora.strftime("%Y-%m-%d %H:%M"),
+
+            "ips": [
+                ip
+            ],
+
+            "navegadores": [
+                navegador
+            ],
+
+            "bloqueado": False
+
+        }
+
+
+    guardar_visitantes(visitantes)
     #aqui va el codigo que guarda las visitas
 #visitaa
 
