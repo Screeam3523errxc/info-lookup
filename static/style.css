@@ -122,46 +122,6 @@ cursor:pointer;
 
 
 
-#loading{
-
-display:none;
-
-text-align:center;
-
-margin-top:40px;
-
-}
-
-
-
-.loader{
-
-width:70px;
-
-height:70px;
-
-border-radius:50%;
-
-border:8px solid #333;
-
-border-top:8px solid cyan;
-
-margin:auto;
-
-animation:girar 1s linear infinite;
-
-}
-
-
-
-@keyframes girar{
-
-100%{
-
-transform:rotate(360deg);
-
-}
-
 }
 
 
