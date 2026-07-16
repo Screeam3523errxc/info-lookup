@@ -35,8 +35,7 @@ async function buscarIP(){
     }
 
 
-    document.getElementById("loading").style.display="block";
-
+document.getElementById("loading").style.display="flex";
     document.getElementById("resultado").innerHTML="";
 
 
@@ -62,7 +61,7 @@ async function buscarIP(){
         cuerpo={
             numero:valor
         };
-
+	
 
     }
 
