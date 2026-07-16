@@ -39,17 +39,70 @@ small{
 
 <h1>📊 Panel de Administración</h1>
 
-<h2>Visitas hoy: {{ visitas|length }}</h2>
+<h2>👥 Visitantes únicos: {{ visitantes|length }}</h2>
 
-{% for visita in visitas %}
+{% for id, visitante in visitantes.items() %}
 
 <div class="card">
 
-<b>🕒 {{ visita.hora }}</b><br>
+<h3>👤 Visitante</h3>
 
-🌐 {{ visita.ip }}<br>
+<p>
+<b>ID:</b><br>
+{{ id }}
+</p>
 
-<small>{{ visita.navegador }}</small>
+<p>
+👁️ Visitas:
+{{ visitante.visitas }}
+</p>
+
+<p>
+📅 Primera visita:
+{{ visitante.primera_visita }}
+</p>
+
+<p>
+🕒 Última visita:
+{{ visitante.ultima_visita }}
+</p>
+
+<p>
+🌐 IPs utilizadas:
+</p>
+
+<ul>
+{% for ip in visitante.ips %}
+<li>{{ ip }}</li>
+{% endfor %}
+</ul>
+
+
+<p>
+📱 Navegadores:
+</p>
+
+<ul>
+{% for navegador in visitante.navegadores %}
+<li>{{ navegador }}</li>
+{% endfor %}
+</ul>
+
+
+{% if visitante.bloqueado %}
+
+<p style="color:red;">
+🔴 Bloqueado
+</p>
+
+{% else %}
+
+<p style="color:lime;">
+🟢 Activo
+</p>
+
+{% endif %}
+
 
 </div>
 

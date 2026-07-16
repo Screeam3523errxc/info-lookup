@@ -119,50 +119,15 @@ def guardar_visita():
 #visitaa
 
 
-
 @app.route("/admin")
 def admin():
 
-    if os.path.exists(ARCHIVO_VISITAS):
+    visitantes = cargar_visitantes()
 
-        with open(ARCHIVO_VISITAS, "r", encoding="utf-8") as archivo:
-
-            try:
-                visitas = json.load(archivo)
-            except:
-                visitas = []
-
-    else:
-        visitas = []
-
-    return render_template("admin.html", visitas=visitas)
-    visita = {
-        "fecha": datetime.now().strftime("%Y-%m-%d"),
-        "hora": datetime.now().strftime("%H:%M"),
-        "ip": request.remote_addr,
-        "navegador": request.headers.get("User-Agent")
-    }
-
-    visitas = []
-
-    if os.path.exists(ARCHIVO_VISITAS):
-
-        with open(ARCHIVO_VISITAS, "r", encoding="utf-8") as archivo:
-
-            try:
-                visitas = json.load(archivo)
-            except:
-                visitas = []
-
-    hoy = datetime.now().strftime("%Y-%m-%d")
-
-    visitas = [v for v in visitas if v["fecha"] == hoy]
-
-    visitas.append(visita)
-
-    with open(ARCHIVO_VISITAS, "w", encoding="utf-8") as archivo:
-
-        json.dump(visitas, archivo, indent=4, ensure_ascii=False)
+    return render_template(
+        "admin.html",
+        visitantes=visitantes
+    )
 
 @app.route("/")
 def inicio():
