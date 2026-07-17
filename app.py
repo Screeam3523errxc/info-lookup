@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, make_response, redirect, url_for, session,jsonify
 import requests
 import random
+import time
 import json
 import os
 from datetime import datetime
@@ -310,6 +311,8 @@ def guardar_visita():
 #visitaa
 
 @app.route("/admin")
+
+@app.route("/admin")
 def admin():
 
     if "admin" not in session:
@@ -317,10 +320,14 @@ def admin():
 
     visitantes = cargar_visitantes()
 
+    bloqueos = cargar_bloqueos()
+
     return render_template(
         "admin.html",
-       visitantes=visitantes
+        visitantes=visitantes,
+        bloqueos=bloqueos
     )
+
 def esta_bloqueado(visitor_id, ip):
 
     lista_negra = cargar_lista(

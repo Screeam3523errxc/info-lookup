@@ -137,5 +137,22 @@ small{
 
 {% endfor %}
 
+<h2>🦆 Bloqueos activos</h2>
+
+{% for id,bloqueo in bloqueos.items() %}
+
+<div class="bloqueo">
+
+    <h3>{{ id }}</h3>
+
+    <p>
+    Motivo:
+    {{ bloqueo.motivo }}
+    </p>
+
+</div>
+
+{% endfor %}
+
 </body>
 </html>
