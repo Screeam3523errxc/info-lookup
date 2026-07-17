@@ -376,7 +376,39 @@ def buscar_telefono():
 
 
 
+@app.route("/desbloquear/<visitor_id>")
+def desbloquear(visitor_id):
 
+    lista_negra = cargar_lista(ARCHIVO_LISTA_NEGRA)
+
+    if visitor_id in lista_negra:
+        lista_negra.remove(visitor_id)
+
+    guardar_lista(
+        ARCHIVO_LISTA_NEGRA,
+        lista_negra
+    )
+
+    return "Visitante desbloqueado 🔓"
+
+
+@app.route("/bloquear/<visitor_id>")
+def bloquear(visitor_id):
+
+    lista_negra = cargar_lista(ARCHIVO_LISTA_NEGRA)
+
+    if visitor_id not in lista_negra:
+        lista_negra.append(visitor_id)
+
+    guardar_lista(
+        ARCHIVO_LISTA_NEGRA,
+        lista_negra
+    )
+
+    return "Visitante bloqueado 🚫"
+
+
+# AQUÍ empieza el arranque del servidor
 if __name__ == "__main__":
 
     app.run(
@@ -384,3 +416,4 @@ if __name__ == "__main__":
         port=5000,
         debug=True
     )
+
