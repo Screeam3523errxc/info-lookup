@@ -329,6 +329,10 @@ def inicio():
 @app.route("/ip", methods=["POST"])
 def buscar_ip():
 
+    visitor_id = obtener_visitor_id()
+
+    registrar_busqueda(visitor_id)
+
     ip = request.json.get("ip")
 
     try:
@@ -392,8 +396,11 @@ def buscar_ip():
 @app.route("/telefono", methods=["POST"])
 def buscar_telefono():
 
-    numero = request.json.get("numero")
+    visitor_id = obtener_visitor_id()
 
+    registrar_busqueda(visitor_id)
+
+    numero = request.json.get("numero")
 
     limpio = numero.replace(" ","").replace("-","")
 
