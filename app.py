@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, make_response
+from flask import Flask, render_template, request, jsonify, make_response, redirect
 import requests
 import json
 import os
@@ -389,8 +389,7 @@ def desbloquear(visitor_id):
         lista_negra
     )
 
-    return "Visitante desbloqueado 🔓"
-
+    return redirect("/admin")
 
 @app.route("/bloquear/<visitor_id>")
 def bloquear(visitor_id):
@@ -405,8 +404,7 @@ def bloquear(visitor_id):
         lista_negra
     )
 
-    return "Visitante bloqueado 🚫"
-
+    return redirect("/admin")
 
 # AQUÍ empieza el arranque del servidor
 if __name__ == "__main__":
