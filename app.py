@@ -183,8 +183,18 @@ def inicio():
 
     visitor_id = obtener_visitor_id()
 
-    guardar_visita()
+    ip = obtener_ip()
 
+
+    if esta_bloqueado(visitor_id, ip):
+
+        return """
+        <h1>🚫 Has sido bloqueado</h1>
+        <p>El administrador ha restringido el acceso.</p>
+        """
+
+
+    guardar_visita()
     respuesta = make_response(
         render_template("index.html")
     )
