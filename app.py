@@ -85,11 +85,12 @@ def obtener_visitor_id():
     return visitor_id
 def obtener_ip():
 
-    return request.headers.get(
+    ip = request.headers.get(
         "X-Forwarded-For",
         request.remote_addr
     )
 
+    return ip.split(",")[0].strip()
 
 def obtener_navegador():
 
