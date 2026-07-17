@@ -1,14 +1,17 @@
-from flask import Flask, render_template, request, jsonify, make_response, redirect
+from flask import Flask, render_template, request, make_response, redirect, url_for, session
 import requests
 import json
 import os
 from datetime import datetime
 import uuid
 app = Flask(__name__)
+app.secret_key = "Patooo"
 ARCHIVO_VISITAS = "visitas.json"
 ARCHIVO_VISITANTES = "visitantes.json"
 ARCHIVO_LISTA_NEGRA = "lista_negra.json"
 ARCHIVO_LISTA_BLANCA = "lista_blanca.json"
+USUARIO_ADMIN = "admin"
+PASSWORD_ADMIN = "6661967"
 def cargar_visitantes():
 
     if os.path.exists(ARCHIVO_VISITANTES):
@@ -440,6 +443,26 @@ def desbloquear_ip(ip):
     )
 
     return redirect("/admin")
+@app.route("/login", methods=["GET", "POST"])
+def login():
+
+    if request.method == "POST":
+
+        usuario = request.form.get("usuario")
+        password = request.form.get("password")
+
+        if (
+            usuario == USUARIO_ADMIN
+            and password == PASSWORD_ADMIN
+        ):
+
+            session["admin"] = True
+
+            return redirect("/admin")
+
+        return "❌ Usuario o contraseña incorrectos"
+
+    return render_template("login.html")
 if __name__ == "__main__":
 
     app.run(
