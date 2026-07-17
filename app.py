@@ -347,6 +347,16 @@ def admin():
 
     bloqueos = cargar_bloqueos()
 
+    ahora = time.time()
+
+    for id in list(bloqueos):
+
+        if bloqueos[id]["fin"] < ahora:
+            del bloqueos[id]
+
+    guardar_bloqueos(bloqueos)
+
+
     for id in bloqueos:
         restante = int(bloqueos[id]["fin"] - time.time())
 
@@ -365,7 +375,21 @@ def admin():
     )
 
 
+@app.route("/reset_nivel/<id>", methods=["POST"])
+def reset_nivel(id):
+
+    visitantes = cargar_visitantes()
+
+    if id in visitantes:
+        visitantes[id]["nivel_bloqueo"] = 0
+
+    guardar_visitantes(visitantes)
+
+    return redirect("/admin")
+
+
 def esta_bloqueado(visitor_id, ip):
+
     lista_negra = cargar_lista(
         ARCHIVO_LISTA_NEGRA
     )
