@@ -261,3 +261,38 @@ z-index:10;
         transform:translateY(-10px);
     }
 }
+/* 🦆 Lucas - diálogo manga */
+
+#lucas-dialogo {
+    background: white;
+    color: black;
+    border: 3px solid black;
+    border-radius: 20px;
+    padding: 12px;
+    width: fit-content;
+    max-width: 250px;
+    position: relative;
+    animation: aparecer 0.5s;
+}
+
+#lucas-dialogo::after {
+    content: "";
+    position: absolute;
+    bottom: -15px;
+    left: 40px;
+    border-width: 15px 10px 0;
+    border-style: solid;
+    border-color: black transparent transparent;
+}
+
+@keyframes aparecer {
+
+    from {
+        transform: scale(0);
+    }
+
+    to {
+        transform: scale(1);
+    }
+
+}

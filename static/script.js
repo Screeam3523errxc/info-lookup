@@ -1,5 +1,13 @@
 let modo = "ip";
+function cambiarLucas(imagen, mensaje){
 
+    document.getElementById("lucas").src =
+    "/static/" + imagen + "?t=" + Date.now();
+
+    document.getElementById("lucas-dialogo").innerHTML =
+    "🦆 " + mensaje;
+
+}
 
 function mostrarIP(){
 
@@ -37,7 +45,10 @@ async function buscarIP(){
 
 document.getElementById("loading").style.display="flex";
     document.getElementById("resultado").innerHTML="";
-
+cambiarLucas(
+    "lucas_hacker.png",
+    "Analizando información..."
+);
 
     let url="";
     let cuerpo={};
@@ -90,7 +101,14 @@ document.getElementById("loading").style.display="flex";
 
 
         document.getElementById("loading").style.display="none";
+setTimeout(() => {
 
+    cambiarLucas(
+        "lucas_idle.png",
+        "¡Encontré información!"
+    );
+
+}, 1500);
 
         mostrarDatos(datos);
 
@@ -104,7 +122,10 @@ document.getElementById("loading").style.display="flex";
 
         document.getElementById("resultado").innerHTML =
         "<h2>Error de conexión</h2>";
-
+cambiarLucas(
+    "lucas_confundido.png",
+    "Algo salió mal..."
+);
     }
 
 
