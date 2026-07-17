@@ -338,8 +338,19 @@ def esta_bloqueado(visitor_id, ip):
     bloqueos = cargar_bloqueos()
 
     if visitor_id in bloqueos:
-        return True
 
+        bloqueo = bloqueos[visitor_id]
+
+        ahora = datetime.now().timestamp()
+
+
+        if ahora < bloqueo["fin"]:
+            return True
+
+        else:
+            del bloqueos[visitor_id]
+
+            guardar_bloqueos(bloqueos)
 
     return False
 
@@ -459,6 +470,15 @@ def buscar_ip():
 def buscar_telefono():
 
     visitor_id = obtener_visitor_id()
+    ip = obtener_ip()
+
+
+    if esta_bloqueado(visitor_id, ip):
+
+        return jsonify({
+            "bloqueado": True,
+            "mensaje": "🦆 Lucas detectó demasiadas búsquedas. Espera un momento."
+        })
 
     registrar_busqueda(visitor_id)
     cantidad = contar_busquedas_recientes(visitor_id)
