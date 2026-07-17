@@ -249,12 +249,25 @@ def crear_bloqueo_temporal(visitor_id, minutos=3):
     elif nivel == 2:
         minutos = 10
 
-    else:
+    elif nivel == 3:
         minutos = 60
 
+    else:
+        lista_negra = cargar_lista(
+            ARCHIVO_LISTA_NEGRA
+        )
+
+        if visitor_id not in lista_negra:
+            lista_negra.append(visitor_id)
+
+        guardar_lista(
+            ARCHIVO_LISTA_NEGRA,
+            lista_negra
+        )
+
+        return
 
     bloqueos = cargar_bloqueos()
-
     fin_bloqueo = datetime.now().timestamp() + (minutos * 60)
     visitantes[visitor_id]["nivel_bloqueo"] = nivel
 
