@@ -80,6 +80,41 @@ def guardar_bloqueos(datos):
             indent=4,
             ensure_ascii=False
         )
+
+def cargar_busquedas():
+
+    if os.path.exists(ARCHIVO_BUSQUEDAS):
+
+        with open(
+            ARCHIVO_BUSQUEDAS,
+            "r",
+            encoding="utf-8"
+        ) as archivo:
+
+            try:
+                return json.load(archivo)
+
+            except:
+                return {}
+
+    return {}
+
+
+def guardar_busquedas(datos):
+
+    with open(
+        ARCHIVO_BUSQUEDAS,
+        "w",
+        encoding="utf-8"
+    ) as archivo:
+
+        json.dump(
+            datos,
+            archivo,
+            indent=4,
+            ensure_ascii=False
+        )
+
 def cargar_lista(archivo):
 
     if os.path.exists(archivo):
@@ -136,6 +171,27 @@ def obtener_navegador():
     return request.headers.get(
         "User-Agent"
     )
+
+
+def registrar_busqueda(visitor_id):
+
+    busquedas = cargar_busquedas()
+
+    ahora = datetime.now()
+
+
+    if visitor_id not in busquedas:
+
+        busquedas[visitor_id] = []
+
+
+    busquedas[visitor_id].append(
+        ahora.strftime("%Y-%m-%d %H:%M:%S")
+    )
+
+
+    guardar_busquedas(busquedas)
+
 def crear_captcha():
 
     a = random.randint(1,10)
