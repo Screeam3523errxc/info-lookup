@@ -204,6 +204,21 @@ const frasesLucas = [
 
 ];
 
+setInterval(()=>{
+
+    let frase =
+    frasesLucas[
+        Math.floor(Math.random() * frasesLucas.length)
+    ];
+
+
+    cambiarLucas(
+        "lucas_idle.png",
+        frase
+    );
+
+
+},15000);
 
 let tiempoInactivo;
 
