@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, make_response, redirect, url_for, session,jsonify
 import requests
+import random
 import json
 import os
 from datetime import datetime
@@ -100,6 +101,15 @@ def obtener_navegador():
     return request.headers.get(
         "User-Agent"
     )
+def crear_captcha():
+
+    a = random.randint(1,10)
+    b = random.randint(1,10)
+
+    session["captcha"] = a + b
+
+    return f"¿Cuánto es {a} + {b}?"
+
 def guardar_visita():
 
     visitor_id = obtener_visitor_id()
@@ -452,6 +462,10 @@ def login():
 
         usuario = request.form.get("usuario")
         password = request.form.get("password")
+        respuesta = request.form.get("captcha")
+
+        if int(respuesta) != session.get("captcha"):
+            return "❌ CAPTCHA incorrecto"
 
         if (
             usuario == USUARIO_ADMIN
@@ -464,7 +478,13 @@ def login():
 
         return "❌ Usuario o contraseña incorrectos"
 
-    return render_template("login.html")
+
+    pregunta = crear_captcha()
+
+    return render_template(
+        "login.html",
+        captcha=pregunta
+    )
 if __name__ == "__main__":
 
     app.run(
