@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, make_response, redirect, url_for, session
 import requests
+import random
 import json
 import os
 from datetime import datetime
@@ -157,17 +158,18 @@ def guardar_visita():
     #aqui va el codigo que guarda las visitas
 #visitaa
 
+
 @app.route("/admin")
 def admin():
 
-    if "admin" not in session:
-        return redirect("/login")
+   if "admin" not in session:
+    return redirect("/login")
 
     visitantes = cargar_visitantes()
 
     return render_template(
         "admin.html",
-       visitantes=visitantes
+        visitantes=visitantes
     )
 def esta_bloqueado(visitor_id, ip):
 
