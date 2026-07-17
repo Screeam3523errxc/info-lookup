@@ -321,23 +321,24 @@ def admin():
     bloqueos = cargar_bloqueos()
 
     for id in bloqueos:
-     restante = int(bloqueos[id]["fin"] - time.time())
+        restante = int(bloqueos[id]["fin"] - time.time())
 
-    if restante < 0:
-        restante = 0
+        if restante < 0:
+            restante = 0
 
-    minutos = restante // 60
-    segundos = restante % 60
+        minutos = restante // 60
+        segundos = restante % 60
 
-    bloqueos[id]["restante"] = f"{minutos:02d}:{segundos:02d}" 
+        bloqueos[id]["restante"] = f"{minutos:02d}:{segundos:02d}"
+
     return render_template(
         "admin.html",
         visitantes=visitantes,
-         bloqueos=bloqueos
+        bloqueos=bloqueos
     )
 
-def esta_bloqueado(visitor_id, ip):
 
+def esta_bloqueado(visitor_id, ip):
     lista_negra = cargar_lista(
         ARCHIVO_LISTA_NEGRA
     )
