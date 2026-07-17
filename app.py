@@ -311,8 +311,6 @@ def guardar_visita():
 #visitaa
 
 @app.route("/admin")
-
-@app.route("/admin")
 def admin():
 
     if "admin" not in session:
@@ -322,10 +320,18 @@ def admin():
 
     bloqueos = cargar_bloqueos()
 
+    for id in bloqueos:
+        restante = int(bloqueos[id]["fin"] - time.time())
+
+    if restante < 0:
+        restante = 0
+
+    bloqueos[id]["restante"] = restante 
+ 
     return render_template(
         "admin.html",
         visitantes=visitantes,
-        bloqueos=bloqueos
+         bloqueos=bloqueos
     )
 
 def esta_bloqueado(visitor_id, ip):
