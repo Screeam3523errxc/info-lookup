@@ -161,6 +161,9 @@ def guardar_visita():
 @app.route("/admin")
 def admin():
 
+   if "admin" not in session:
+    return redirect("/login")
+
     visitantes = cargar_visitantes()
 
     return render_template(
