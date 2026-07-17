@@ -225,6 +225,23 @@ def contar_busquedas_recientes(visitor_id):
 
 
     return len(recientes)
+def crear_bloqueo_temporal(visitor_id, minutos=3):
+
+    bloqueos = cargar_bloqueos()
+
+    fin_bloqueo = datetime.now().timestamp() + (minutos * 60)
+
+
+    bloqueos[visitor_id] = {
+
+        "fin": fin_bloqueo,
+
+        "motivo": "Exceso de búsquedas"
+
+    }
+
+
+    guardar_bloqueos(bloqueos)
 
 def crear_captcha():
 
@@ -366,6 +383,17 @@ def buscar_ip():
     visitor_id = obtener_visitor_id()
 
     registrar_busqueda(visitor_id)
+    cantidad = contar_busquedas_recientes(visitor_id)
+
+    print("BUSQUEDAS:", cantidad)
+
+    if cantidad > 10:
+
+        crear_bloqueo_temporal(visitor_id)
+
+        return jsonify({
+            "Error": "Demasiadas búsquedas. Espera unos minutos 🦆"
+        })
 
     ip = request.json.get("ip")
 
@@ -433,6 +461,16 @@ def buscar_telefono():
     visitor_id = obtener_visitor_id()
 
     registrar_busqueda(visitor_id)
+    cantidad = contar_busquedas_recientes(visitor_id)
+
+
+    if cantidad > 10:
+
+        crear_bloqueo_temporal(visitor_id)
+
+        return jsonify({
+            "Error": "Demasiadas búsquedas. Espera unos minutos 🦆"
+        })
 
     numero = request.json.get("numero")
 
