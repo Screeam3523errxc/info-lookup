@@ -11,6 +11,8 @@ ARCHIVO_VISITAS = "visitas.json"
 ARCHIVO_VISITANTES = "visitantes.json"
 ARCHIVO_LISTA_NEGRA = "lista_negra.json"
 ARCHIVO_LISTA_BLANCA = "lista_blanca.json"
+ARCHIVO_BLOQUEOS = "bloqueos_temporales.json"
+ARCHIVO_BUSQUEDAS = "busquedas.json"
 USUARIO_ADMIN = "admin"
 PASSWORD_ADMIN = "6661967"
 def cargar_visitantes():
@@ -35,6 +37,39 @@ def guardar_visitantes(datos):
 
     with open(
         ARCHIVO_VISITANTES,
+        "w",
+        encoding="utf-8"
+    ) as archivo:
+
+        json.dump(
+            datos,
+            archivo,
+            indent=4,
+            ensure_ascii=False
+        )
+def cargar_bloqueos():
+
+    if os.path.exists(ARCHIVO_BLOQUEOS):
+
+        with open(
+            ARCHIVO_BLOQUEOS,
+            "r",
+            encoding="utf-8"
+        ) as archivo:
+
+            try:
+                return json.load(archivo)
+
+            except:
+                return {}
+
+    return {}
+
+
+def guardar_bloqueos(datos):
+
+    with open(
+        ARCHIVO_BLOQUEOS,
         "w",
         encoding="utf-8"
     ) as archivo:
@@ -193,7 +228,14 @@ def esta_bloqueado(visitor_id, ip):
         return True
 
 
+    bloqueos = cargar_bloqueos()
+
+    if visitor_id in bloqueos:
+        return True
+
+
     return False
+
 @app.route("/")
 def inicio():
 
