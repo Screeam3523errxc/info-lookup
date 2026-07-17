@@ -42,6 +42,36 @@ async function buscarIP(){
 
     }
 
+if(modo === "ip"){
+
+    let ipValida =
+    /^(\d{1,3}\.){3}\d{1,3}$/.test(valor);
+
+    if(!ipValida){
+
+   cambiarLucas(
+    "lucas_confundido.png",
+    "Eso no parece una IP 🥺"
+);
+
+
+setTimeout(() => {
+
+    cambiarLucas(
+        "lucas_idle.png",
+        "Listo para otra búsqueda 🦆"
+    );
+
+}, 1500);
+
+        document.getElementById("resultado").innerHTML =
+        "<h2>IP no válida</h2>";
+
+        return;
+
+    }
+
+}
 
 document.getElementById("loading").style.display="flex";
     document.getElementById("resultado").innerHTML="";
@@ -162,5 +192,43 @@ function mostrarDatos(datos){
 
     document.getElementById("resultado").innerHTML=html;
 
+
+}
+const frasesLucas = [
+
+    "Esperando una nueva búsqueda 🦆",
+    "Cuac cuac, todo tranquilo por aquí",
+    "Lucas está vigilando los datos 👀",
+    "Los patos también investigan misterios",
+    "Preparando mis poderes de pato ⚡"
+
+];
+
+
+let tiempoInactivo;
+
+
+function reiniciarLucas(){
+
+    clearTimeout(tiempoInactivo);
+
+
+    tiempoInactivo = setTimeout(()=>{
+
+        let frase =
+        frasesLucas[
+            Math.floor(
+                Math.random() * frasesLucas.length
+            )
+        ];
+
+
+        cambiarLucas(
+            "lucas_idle.png",
+            frase
+        );
+
+
+    },15000);
 
 }

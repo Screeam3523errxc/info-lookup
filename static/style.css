@@ -296,3 +296,139 @@ z-index:10;
     }
 
 }
+#lucas{
+
+    animation:
+    aura 2s infinite,
+    flotar 3s ease-in-out infinite;
+
+}
+
+
+@keyframes aura{
+
+    0%{
+        filter: drop-shadow(0 0 5px cyan);
+    }
+
+    50%{
+        filter: drop-shadow(0 0 30px cyan);
+    }
+
+    100%{
+        filter: drop-shadow(0 0 5px cyan);
+    }
+
+}
+
+
+@keyframes flotar{
+
+    0%{
+        transform: translateY(0px);
+    }
+
+    50%{
+        transform: translateY(-8px);
+    }
+
+    100%{
+        transform: translateY(0px);
+    }
+
+}
+#lucas-dialogo{
+
+    background: rgba(0,0,0,0.75);
+     
+        position: absolute;
+
+    bottom: 100%;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    margin-bottom: 15px;
+
+    color:white;
+
+    padding:12px 18px;
+
+    border:3px solid cyan;
+
+    border-radius:15px;
+
+    font-weight:bold;
+
+    font-size:16px;
+
+    text-align:center;
+
+    max-width:250px;
+
+    box-shadow:
+    0 0 10px cyan,
+    0 0 25px cyan;
+
+    animation:
+    aparecer .4s ease;
+
+}
+
+
+#lucas-dialogo::before{
+
+    content:"🦆 LUCAS";
+
+    display:block;
+
+    color:cyan;
+
+    font-size:13px;
+
+    margin-bottom:5px;
+
+}
+
+.lucas-box{
+
+    position: relative;
+
+}
+
+
+#lucas-dialogo{
+
+    position: absolute;
+
+    bottom: 100%;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    margin-bottom: 15px;
+
+}
+
+@keyframes aparecer{
+
+    from{
+
+        transform:scale(.7);
+
+        opacity:0;
+
+    }
+
+
+    to{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
+}
