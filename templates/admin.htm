@@ -137,6 +137,8 @@ small{
 
 {% endfor %}
 
+{% endfor %}
+
 <h2>🦆 Bloqueos activos</h2>
 
 {% for id,bloqueo in bloqueos.items() %}
@@ -150,13 +152,47 @@ small{
     {{ bloqueo.motivo }}
     </p>
 
-      <p>
+<p>
 ⏳ Tiempo restante:
-{{ bloqueo.restante }} segundos
+<span class="contador" data-tiempo="{{ bloqueo.restante }}">
+{{ bloqueo.restante }}
+</span>
 </p>
+
 </div>
 
 {% endfor %}
 
+<script>
+
+setInterval(() => {
+
+    document.querySelectorAll(".contador").forEach(contador => {
+
+        let tiempo = contador.dataset.tiempo.split(":");
+
+        let minutos = parseInt(tiempo[0]);
+        let segundos = parseInt(tiempo[1]);
+
+        if(segundos > 0){
+            segundos--;
+        } else if(minutos > 0){
+            minutos--;
+            segundos = 59;
+        }
+
+        contador.dataset.tiempo =
+            `${String(minutos).padStart(2,"0")}:${String(segundos).padStart(2,"0")}`;
+
+        contador.innerHTML =
+            contador.dataset.tiempo;
+
+    });
+
+},1000);
+
+</script>
+
 </body>
 </html>
+

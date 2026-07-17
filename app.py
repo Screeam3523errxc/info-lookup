@@ -321,13 +321,15 @@ def admin():
     bloqueos = cargar_bloqueos()
 
     for id in bloqueos:
-        restante = int(bloqueos[id]["fin"] - time.time())
+     restante = int(bloqueos[id]["fin"] - time.time())
 
     if restante < 0:
         restante = 0
 
-    bloqueos[id]["restante"] = restante 
- 
+    minutos = restante // 60
+    segundos = restante % 60
+
+    bloqueos[id]["restante"] = f"{minutos:02d}:{segundos:02d}" 
     return render_template(
         "admin.html",
         visitantes=visitantes,
