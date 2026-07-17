@@ -53,6 +53,17 @@ small{
 </p>
 
 <p>
+🔒 Nivel de bloqueo:
+{{ visitante.nivel_bloqueo }}
+</p>
+
+<form action="/reset_nivel/{{ id }}" method="POST">
+    <button type="submit">
+        🔄 Resetear nivel
+    </button>
+</form>
+
+<p>
 👁️ Visitas:
 {{ visitante.visitas }}
 </p>
