@@ -191,6 +191,40 @@ def registrar_busqueda(visitor_id):
 
 
     guardar_busquedas(busquedas)
+def contar_busquedas_recientes(visitor_id):
+
+    busquedas = cargar_busquedas()
+
+    if visitor_id not in busquedas:
+        return 0
+
+
+    ahora = datetime.now()
+
+    recientes = []
+
+
+    for tiempo in busquedas[visitor_id]:
+
+        fecha = datetime.strptime(
+            tiempo,
+            "%Y-%m-%d %H:%M:%S"
+        )
+
+
+        diferencia = (ahora - fecha).total_seconds()
+
+
+        if diferencia <= 60:
+            recientes.append(tiempo)
+
+
+    busquedas[visitor_id] = recientes
+
+    guardar_busquedas(busquedas)
+
+
+    return len(recientes)
 
 def crear_captcha():
 
