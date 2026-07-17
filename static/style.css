@@ -432,3 +432,76 @@ z-index:10;
     }
 
 }
+/* ========================= */
+/* PANTALLA DE BLOQUEO LUCAS */
+/* ========================= */
+
+#pantalla-bloqueo{
+
+    display:none;
+
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    height:100%;
+
+    background:rgba(0,0,0,.93);
+
+    z-index:99999;
+
+    color:white;
+
+    text-align:center;
+
+    padding-top:40px;
+
+}
+
+#lucas-bloqueado{
+
+    width:260px;
+
+    animation:flotar 2s infinite ease-in-out;
+
+}
+
+#contador-bloqueo{
+
+    font-size:60px;
+
+    font-weight:bold;
+
+    color:#00ffff;
+
+    margin-top:20px;
+
+}
+
+#mensaje-bloqueo{
+
+    font-size:22px;
+
+    margin-top:20px;
+
+}
+
+@keyframes flotar{
+
+    0%{
+        transform:translateY(0px);
+    }
+
+    50%{
+        transform:translateY(-10px);
+    }
+
+    100%{
+        transform:translateY(0px);
+    }
+
+}

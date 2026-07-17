@@ -393,6 +393,15 @@ def buscar_ip():
 
     visitor_id = obtener_visitor_id()
 
+    ip_cliente = obtener_ip()
+
+    if esta_bloqueado(visitor_id, ip_cliente):
+
+        return jsonify({
+        "bloqueado": True,
+        "mensaje": "🦆 Lucas detectó demasiadas búsquedas. Espera un momento."
+    })
+
     registrar_busqueda(visitor_id)
     cantidad = contar_busquedas_recientes(visitor_id)
 

@@ -102,7 +102,7 @@ cambiarLucas(
         cuerpo={
             numero:valor
         };
-	
+
 
     }
 
@@ -128,7 +128,17 @@ cambiarLucas(
 
 
         let datos = await respuesta.json();
+if(datos.bloqueado){
 
+    document.getElementById("loading").style.display = "none";
+
+    document.getElementById("pantalla-bloqueo").style.display = "block";
+
+    iniciarContador(180);
+
+    return;
+
+}
 
         document.getElementById("loading").style.display="none";
 setTimeout(() => {
@@ -245,5 +255,44 @@ function reiniciarLucas(){
 
 
     },15000);
+
+}
+function iniciarContador(segundos){
+
+    let tiempo = segundos;
+
+    let reloj = document.getElementById(
+        "contador-bloqueo"
+    );
+
+
+    let intervalo = setInterval(()=>{
+
+        let minutos = Math.floor(tiempo / 60);
+
+        let segundosRestantes = tiempo % 60;
+
+
+        reloj.innerHTML =
+        minutos.toString().padStart(2,"0")
+        + ":" +
+        segundosRestantes.toString().padStart(2,"0");
+
+
+        tiempo--;
+
+
+        if(tiempo < 0){
+
+            clearInterval(intervalo);
+
+            document.getElementById(
+                "pantalla-bloqueo"
+            ).style.display="none";
+
+        }
+
+
+    },1000);
 
 }
