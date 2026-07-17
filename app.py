@@ -228,9 +228,38 @@ def contar_busquedas_recientes(visitor_id):
     return len(recientes)
 def crear_bloqueo_temporal(visitor_id, minutos=3):
 
+    visitantes = cargar_visitantes()
+
+    if visitor_id not in visitantes:
+        visitantes[visitor_id] = {
+            "visitas": 0,
+            "primera_visita": "",
+            "ultima_visita": "",
+            "ips": [],
+            "navegadores": [],
+            "bloqueado": False,
+            "nivel_bloqueo": 0
+        }
+
+    nivel = visitantes[visitor_id].get("nivel_bloqueo", 0) + 1
+
+    if nivel == 1:
+        minutos = 3
+
+    elif nivel == 2:
+        minutos = 10
+
+    else:
+        minutos = 60
+
+
     bloqueos = cargar_bloqueos()
 
     fin_bloqueo = datetime.now().timestamp() + (minutos * 60)
+    visitantes[visitor_id]["nivel_bloqueo"] = nivel
+
+    guardar_visitantes(visitantes)
+
 
 
     bloqueos[visitor_id] = {
@@ -241,11 +270,8 @@ def crear_bloqueo_temporal(visitor_id, minutos=3):
 
     }
 
-
     guardar_bloqueos(bloqueos)
-
 def crear_captcha():
-
     a = random.randint(1,10)
     b = random.randint(1,10)
 
@@ -301,8 +327,9 @@ def guardar_visita():
                 navegador
             ],
 
-            "bloqueado": False
+            "bloqueado": False,
 
+            "nivel_bloqueo": 0
         }
 
 
