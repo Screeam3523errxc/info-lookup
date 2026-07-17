@@ -7,6 +7,8 @@ import uuid
 app = Flask(__name__)
 ARCHIVO_VISITAS = "visitas.json"
 ARCHIVO_VISITANTES = "visitantes.json"
+ARCHIVO_LISTA_NEGRA = "lista_negra.json"
+ARCHIVO_LISTA_BLANCA = "lista_blanca.json"
 def cargar_visitantes():
 
     if os.path.exists(ARCHIVO_VISITANTES):
@@ -36,6 +38,39 @@ def guardar_visitantes(datos):
         json.dump(
             datos,
             archivo,
+            indent=4,
+            ensure_ascii=False
+        )
+def cargar_lista(archivo):
+
+    if os.path.exists(archivo):
+
+        with open(
+            archivo,
+            "r",
+            encoding="utf-8"
+        ) as f:
+
+            try:
+                return json.load(f)
+
+            except:
+                return []
+
+    return []
+
+
+def guardar_lista(archivo, datos):
+
+    with open(
+        archivo,
+        "w",
+        encoding="utf-8"
+    ) as f:
+
+        json.dump(
+            datos,
+            f,
             indent=4,
             ensure_ascii=False
         )
@@ -128,7 +163,21 @@ def admin():
         "admin.html",
         visitantes=visitantes
     )
+def esta_bloqueado(visitor_id, ip):
 
+    lista_negra = cargar_lista(
+        ARCHIVO_LISTA_NEGRA
+    )
+
+    if visitor_id in lista_negra:
+        return True
+
+
+    if ip in lista_negra:
+        return True
+
+
+    return False
 @app.route("/")
 def inicio():
 
