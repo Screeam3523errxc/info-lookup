@@ -407,6 +407,38 @@ def bloquear(visitor_id):
     return redirect("/admin")
 
 # AQUÍ empieza el arranque del servidor
+@app.route("/bloquear_ip/<ip>")
+def bloquear_ip(ip):
+
+    lista_negra = cargar_lista(
+        ARCHIVO_LISTA_NEGRA
+    )
+
+    if ip not in lista_negra:
+        lista_negra.append(ip)
+
+    guardar_lista(
+        ARCHIVO_LISTA_NEGRA,
+        lista_negra
+    )
+
+    return redirect("/admin")
+@app.route("/desbloquear_ip/<ip>")
+def desbloquear_ip(ip):
+
+    lista_negra = cargar_lista(
+        ARCHIVO_LISTA_NEGRA
+    )
+
+    if ip in lista_negra:
+        lista_negra.remove(ip)
+
+    guardar_lista(
+        ARCHIVO_LISTA_NEGRA,
+        lista_negra
+    )
+
+    return redirect("/admin")
 if __name__ == "__main__":
 
     app.run(

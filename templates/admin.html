@@ -118,6 +118,20 @@ small{
 🔓 Desbloquear
 </button>
 </a>
+{% for ip in visitante.ips %}
+
+<a href="/bloquear_ip/{{ ip }}">
+<button>
+🌐 Bloquear IP {{ ip }}
+</button>
+</a>
+
+<a href="/desbloquear_ip/{{ ip }}">
+<button>
+🔓 Desbloquear IP {{ ip }}
+</button>
+</a>
+{% endfor %}
 
 </div>
 
