@@ -582,26 +582,40 @@ def buscar_telefono():
     visitor_id = obtener_visitor_id()
     ip = obtener_ip()
 
-
     if esta_bloqueado(visitor_id, ip):
 
-        return jsonify({
-            "bloqueado": True,
-            "mensaje": "🦆 Lucas detectó demasiadas búsquedas. Espera un momento."
-        })
+        bloqueos = cargar_bloqueos()
+        bloqueo = bloqueos.get(visitor_id)
+
+        if bloqueo:
+
+            restante = int(
+                bloqueo["fin"] - datetime.now().timestamp()
+            )
+
+            return jsonify({
+                "bloqueado": True,
+                "duracion": restante,
+                "nivel": bloqueo.get("nivel", 1),
+                "mensaje": "🦆 Lucas detectó demasiadas búsquedas. Espera un momento."
+            })
 
     registrar_busqueda(visitor_id)
-    cantidad = contar_busquedas_recientes(visitor_id)
 
+    cantidad = contar_busquedas_recientes(visitor_id)
 
     if cantidad > 10:
 
         crear_bloqueo_temporal(visitor_id)
 
         return jsonify({
-            "Error": "Demasiadas búsquedas. Espera unos minutos 🦆"
+            "bloqueado": True,
+            "duracion": 180,
+            "nivel": 1,
+            "mensaje": "🦆 Lucas detectó demasiadas búsquedas."
         })
 
+    # aquí continúa la búsqueda normal del teléfono
     numero = request.json.get("numero")
 
     limpio = numero.replace(" ","").replace("-","")
