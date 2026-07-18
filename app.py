@@ -278,7 +278,7 @@ def crear_bloqueo_temporal(visitor_id, minutos=3):
         "fin": fin_bloqueo,
         "motivo": "Exceso de búsquedas",
         "nivel": nivel,
-        "duracion": minutos
+        "duracion": minutos * 60
     }
 
     guardar_bloqueos(bloqueos)

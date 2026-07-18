@@ -128,13 +128,16 @@ cambiarLucas(
 
 
         let datos = await respuesta.json();
+console.log(datos);
+console.log("duracion:", datos.duracion);
+
 if(datos.bloqueado){
 
     document.getElementById("loading").style.display = "none";
 
     document.getElementById("pantalla-bloqueo").style.display = "block";
 
-    iniciarContador(180);
+    iniciarContador(Number(datos.duracion));
 
     return;
 
