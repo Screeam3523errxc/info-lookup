@@ -274,16 +274,15 @@ def crear_bloqueo_temporal(visitor_id, minutos=3):
     guardar_visitantes(visitantes)
 
 
-
     bloqueos[visitor_id] = {
-
         "fin": fin_bloqueo,
-
-        "motivo": "Exceso de búsquedas"
-
+        "motivo": "Exceso de búsquedas",
+        "nivel": nivel,
+        "duracion": minutos
     }
 
     guardar_bloqueos(bloqueos)
+
 def crear_captcha():
     a = random.randint(1,10)
     b = random.randint(1,10)
@@ -477,15 +476,36 @@ def buscar_ip():
 
     if esta_bloqueado(visitor_id, ip_cliente):
 
+        bloqueos = cargar_bloqueos()
+        bloqueo = bloqueos.get(visitor_id)
+
+        if bloqueo:
+
+            restante = int(
+                bloqueo["fin"] - datetime.now().timestamp()
+            )
+
+            return jsonify({
+                "bloqueado": True,
+                "duracion": restante,
+                "nivel": bloqueo.get("nivel", 1),
+                "mensaje": "🦆 Lucas detectó demasiadas búsquedas. Espera un momento."
+            })
+
         return jsonify({
-        "bloqueado": True,
-        "mensaje": "🦆 Lucas detectó demasiadas búsquedas. Espera un momento."
-    })
+            "bloqueado": True,
+            "duracion": 180,
+            "nivel": 1,
+            "mensaje": "🦆 Lucas detectó demasiadas búsquedas."
+        })
+
 
     registrar_busqueda(visitor_id)
+
     cantidad = contar_busquedas_recientes(visitor_id)
 
     print("BUSQUEDAS:", cantidad)
+
 
     if cantidad > 10:
 
@@ -494,6 +514,7 @@ def buscar_ip():
         return jsonify({
             "Error": "Demasiadas búsquedas. Espera unos minutos 🦆"
         })
+
 
     ip = request.json.get("ip")
 
