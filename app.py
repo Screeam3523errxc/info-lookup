@@ -216,7 +216,7 @@ def contar_busquedas_recientes(visitor_id):
         diferencia = (ahora - fecha).total_seconds()
 
 
-        if diferencia <= 60:
+        if diferencia <= 45:
             recientes.append(tiempo)
 
 
@@ -511,7 +511,7 @@ def buscar_ip():
     print("BUSQUEDAS:", cantidad)
 
 
-    if cantidad > 10:
+    if cantidad > 7:
 
         crear_bloqueo_temporal(visitor_id)
         return respuesta_bloqueo(visitor_id)
@@ -590,7 +590,7 @@ def buscar_telefono():
 
     cantidad = contar_busquedas_recientes(visitor_id)
 
-    if cantidad > 10:
+    if cantidad > 7:
 
         crear_bloqueo_temporal(visitor_id)
         return respuesta_bloqueo(visitor_id)

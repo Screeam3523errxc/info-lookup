@@ -1,173 +1,141 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
 <meta charset="UTF-8">
 <title>Panel Admin</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-
 body{
     background:#0f172a;
     color:white;
     font-family:Arial;
-    padding:30px;
+    padding:20px;
 }
-
-h1{
-    color:#38bdf8;
-}
-
+h1{ color:#38bdf8; }
+h2{ color:#94a3b8; margin-top:30px; }
 .card{
-
     background:#1e293b;
     padding:15px;
     border-radius:12px;
     margin-bottom:15px;
-
 }
-
-small{
-    color:#94a3b8;
+small{ color:#94a3b8; }
+#buscador{
+    width:100%;
+    max-width:500px;
+    padding:12px 15px;
+    font-size:16px;
+    border-radius:10px;
+    border:none;
+    margin:15px 0 25px 0;
+    background:#1e293b;
+    color:white;
+    border:1px solid #334155;
 }
-
+.oculto{ display:none; }
+button{
+    margin:4px 4px 4px 0;
+    padding:8px 12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#334155;
+    color:white;
+}
+a{ text-decoration:none; }
 </style>
-
 </head>
-
 <body>
 
 <h1>📊 Panel de Administración</h1>
 
-<h2>👥 Visitantes únicos: {{ visitantes|length }}</h2>
+<input type="text" id="buscador" placeholder="🔍 Buscar por ID o IP..." oninput="filtrar()">
 
+<h2>👥 Visitantes únicos: <span id="total">{{ visitantes|length }}</span></h2>
+
+<div id="lista-visitantes">
 {% for id, visitante in visitantes.items() %}
-
-<div class="card">
+<div class="card visitante" data-id="{{ id }}" data-ips="{{ visitante.ips|join(' ') }}">
 
 <h3>👤 Visitante</h3>
 
-<p>
-<b>ID:</b><br>
-{{ id }}
-</p>
+<p><b>ID:</b><br>{{ id }}</p>
 
-<p>
-🔒 Nivel de bloqueo:
-{{ visitante.nivel_bloqueo }}
-</p>
+<p>🔒 Nivel de bloqueo: {{ visitante.nivel_bloqueo }}</p>
 
 <form action="/reset_nivel/{{ id }}" method="POST">
-    <button type="submit">
-        🔄 Resetear nivel
-    </button>
+    <button type="submit">🔄 Resetear nivel</button>
 </form>
 
-<p>
-👁️ Visitas:
-{{ visitante.visitas }}
-</p>
+<p>👁️ Visitas: {{ visitante.visitas }}</p>
+<p>📅 Primera visita: {{ visitante.primera_visita }}</p>
+<p>🕒 Última visita: {{ visitante.ultima_visita }}</p>
 
-<p>
-📅 Primera visita:
-{{ visitante.primera_visita }}
-</p>
-
-<p>
-🕒 Última visita:
-{{ visitante.ultima_visita }}
-</p>
-
-<p>
-🌐 IPs utilizadas:
-</p>
-
+<p>🌐 IPs utilizadas:</p>
 <ul>
 {% for ip in visitante.ips %}
 <li>{{ ip }}</li>
 {% endfor %}
 </ul>
 
-
-<p>
-📱 Navegadores:
-</p>
-
+<p>📱 Navegadores:</p>
 <ul>
 {% for navegador in visitante.navegadores %}
-<li>{{ navegador }}</li>
+<li style="word-break:break-all;">{{ navegador }}</li>
 {% endfor %}
 </ul>
 
-
 {% if visitante.bloqueado %}
-
-<p style="color:red;">
-🔴 Bloqueado
-</p>
-
+<p style="color:red;">🔴 Bloqueado</p>
 {% else %}
-
-<p style="color:lime;">
-🟢 Activo
-</p>
-
+<p style="color:lime;">🟢 Activo</p>
 {% endif %}
 
-
-
 <br>
+<a href="/bloquear/{{ id }}"><button>🚫 Bloquear</button></a>
+<a href="/desbloquear/{{ id }}"><button>🔓 Desbloquear</button></a>
 
-<a href="/bloquear/{{ id }}">
-<button>
-🚫 Bloquear
-</button>
-</a>
-
-<a href="/desbloquear/{{ id }}">
-<button>
-🔓 Desbloquear
-</button>
-</a>
 {% for ip in visitante.ips %}
-
-<a href="/bloquear_ip/{{ ip }}">
-<button>
-🌐 Bloquear IP {{ ip }}
-</button>
-</a>
-
-<a href="/desbloquear_ip/{{ ip }}">
-<button>
-🔓 Desbloquear IP {{ ip }}
-</button>
-</a>
+<a href="/bloquear_ip/{{ ip }}"><button>🌐 Bloquear IP {{ ip }}</button></a>
+<a href="/desbloquear_ip/{{ ip }}"><button>🔓 Desbloquear IP</button></a>
 {% endfor %}
 
 </div>
-
 {% endfor %}
+</div>
 
 <h2>🦆 Bloqueos activos</h2>
 
 {% for id,bloqueo in bloqueos.items() %}
-
-<div class="bloqueo">
-
+<div class="card">
     <h3>{{ id }}</h3>
-
-    <p>
-    Motivo:
-    {{ bloqueo.motivo }}
-    </p>
-
-      <p>
-⏳ Tiempo restante:
-{{ bloqueo.restante }} segundos
-</p>
+    <p>Motivo: {{ bloqueo.motivo }}</p>
+    <p>⏳ Tiempo restante: {{ bloqueo.restante }}</p>
+    <p>Nivel: {{ bloqueo.nivel }}</p>
 </div>
-
 {% endfor %}
+
+<script>
+function filtrar(){
+    const texto = document.getElementById("buscador").value.toLowerCase().trim();
+    const tarjetas = document.querySelectorAll(".visitante");
+    let visibles = 0;
+
+    tarjetas.forEach(tarjeta => {
+        const id = tarjeta.dataset.id.toLowerCase();
+        const ips = tarjeta.dataset.ips.toLowerCase();
+
+        if(id.includes(texto) || ips.includes(texto)){
+            tarjeta.classList.remove("oculto");
+            visibles++;
+        }else{
+            tarjeta.classList.add("oculto");
+        }
+    });
+
+    document.getElementById("total").innerText = visibles;
+}
+</script>
 
 </body>
 </html>
