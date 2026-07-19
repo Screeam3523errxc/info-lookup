@@ -281,13 +281,6 @@ def crear_bloqueo_temporal(visitor_id, minutos=3):
         "duracion": minutos * 60
     }
 
-    busquedas = cargar_busquedas()
-
-    if visitor_id in busquedas:
-       del busquedas[visitor_id]
-
-    guardar_busquedas(busquedas)
-
     guardar_bloqueos(bloqueos)
 
 def crear_captcha():
@@ -440,6 +433,32 @@ def esta_bloqueado(visitor_id, ip):
 
     return False
 
+
+def respuesta_bloqueo(visitor_id):
+    """Devuelve la respuesta JSON correcta con el nivel y duración reales del bloqueo."""
+    bloqueos = cargar_bloqueos()
+    bloqueo = bloqueos.get(visitor_id)
+
+    if bloqueo:
+        restante = int(bloqueo["fin"] - datetime.now().timestamp())
+        if restante < 0:
+            restante = 0
+
+        return jsonify({
+            "bloqueado": True,
+            "duracion": restante,
+            "nivel": bloqueo.get("nivel", 1),
+            "mensaje": "🦆 Lucas detectó demasiadas búsquedas. Espera un momento."
+        })
+
+    # Si no hay bloqueo temporal, es baneo permanente (lista negra)
+    return jsonify({
+        "bloqueado": True,
+        "duracion": 31536000,  # \~1 año (se considera permanente)
+        "nivel": 4,
+        "mensaje": "🦆 Has sido bloqueado permanentemente por abuso o por el administrador."
+    })
+
 @app.route("/")
 def inicio():
 
@@ -482,29 +501,7 @@ def buscar_ip():
     ip_cliente = obtener_ip()
 
     if esta_bloqueado(visitor_id, ip_cliente):
-
-        bloqueos = cargar_bloqueos()
-        bloqueo = bloqueos.get(visitor_id)
-
-        if bloqueo:
-
-            restante = int(
-                bloqueo["fin"] - datetime.now().timestamp()
-            )
-
-            return jsonify({
-                "bloqueado": True,
-                "duracion": restante,
-                "nivel": bloqueo.get("nivel", 1),
-                "mensaje": "🦆 Lucas detectó demasiadas búsquedas. Espera un momento."
-            })
-
-        return jsonify({
-            "bloqueado": True,
-            "duracion": 180,
-            "nivel": 1,
-            "mensaje": "🦆 Lucas detectó demasiadas búsquedas."
-        })
+        return respuesta_bloqueo(visitor_id)
 
 
     registrar_busqueda(visitor_id)
@@ -517,10 +514,7 @@ def buscar_ip():
     if cantidad > 10:
 
         crear_bloqueo_temporal(visitor_id)
-
-        return jsonify({
-            "Error": "Demasiadas búsquedas. Espera unos minutos 🦆"
-        })
+        return respuesta_bloqueo(visitor_id)
 
 
     ip = request.json.get("ip")
@@ -590,22 +584,7 @@ def buscar_telefono():
     ip = obtener_ip()
 
     if esta_bloqueado(visitor_id, ip):
-
-        bloqueos = cargar_bloqueos()
-        bloqueo = bloqueos.get(visitor_id)
-
-        if bloqueo:
-
-            restante = int(
-                bloqueo["fin"] - datetime.now().timestamp()
-            )
-
-            return jsonify({
-                "bloqueado": True,
-                "duracion": restante,
-                "nivel": bloqueo.get("nivel", 1),
-                "mensaje": "🦆 Lucas detectó demasiadas búsquedas. Espera un momento."
-            })
+        return respuesta_bloqueo(visitor_id)
 
     registrar_busqueda(visitor_id)
 
@@ -614,13 +593,7 @@ def buscar_telefono():
     if cantidad > 10:
 
         crear_bloqueo_temporal(visitor_id)
-
-        return jsonify({
-            "bloqueado": True,
-            "duracion": 180,
-            "nivel": 1,
-            "mensaje": "🦆 Lucas detectó demasiadas búsquedas."
-        })
+        return respuesta_bloqueo(visitor_id)
 
     # aquí continúa la búsqueda normal del teléfono
     numero = request.json.get("numero")
@@ -820,4 +793,3 @@ if __name__ == "__main__":
         port=5000,
         debug=True
     )
-
