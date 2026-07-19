@@ -281,6 +281,13 @@ def crear_bloqueo_temporal(visitor_id, minutos=3):
         "duracion": minutos * 60
     }
 
+    busquedas = cargar_busquedas()
+
+    if visitor_id in busquedas:
+       del busquedas[visitor_id]
+
+    guardar_busquedas(busquedas)
+
     guardar_bloqueos(bloqueos)
 
 def crear_captcha():
